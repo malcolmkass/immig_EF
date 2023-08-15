@@ -1,0 +1,38 @@
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\controls1.log
+  log type:  text
+ opened on:  15 Aug 2023, 18:13:10
+
+.         set more off
+
+.         version 13
+
+. 
+. cap net set ado "C:\ado\personal"
+
+. adopath + "C:\ado\personal"
+  [1]  (BASE)      "C:\Program Files\Stata17\ado\base/"
+  [2]  (SITE)      "C:\Program Files\Stata17\ado\site/"
+  [3]              "."
+  [4]  (PERSONAL)  "C:\Users\mkass\ado\personal/"
+  [5]  (PLUS)      "C:\Users\mkass\ado\plus/"
+  [6]  (OLDPLACE)  "c:\ado/"
+  [7]              "C:\ado\personal"
+
+. 
+end of do-file
+
+. do "C:\Users\mkass\AppData\Local\Temp\STD2380_000000.tmp"
+
+. ssc install schemepack, replace
+checking schemepack consistency and verifying not already installed...
+all files already exist and are up to date.
+
+. set scheme black_w3d
+
+. graph set window fontface "Arial Narrow"
+
+. 
+end of do-file
+
