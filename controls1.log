@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\controls1.log
   log type:  text
- opened on:  17 Aug 2023, 14:22:26
+ opened on:  17 Aug 2023, 16:53:20
 
 .         set more off
 
@@ -41,23 +41,110 @@ all files already exist and are up to date.
 . *business dynamics
 . clear
 
-. *import excel "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\bds2020_states.xlsx", sheet("bds2020_states_full") firstrow clear
-. import delimited "C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\bds2020_states_full.csv", clear 
-file C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\bds2020_states_full.csv not found
-r(601);
-
+. 
 end of do-file
-
-r(601);
 
 . do "C:\Users\mkass\AppData\Local\Temp\STD2380_000000.tmp"
 
+. import delimited bds2020_states_full.csv, clear 
+(encoding automatically selected: ISO-8859-1)
+(27 vars, 2,193 obs)
+
+. 
+end of do-file
+
+. do "C:\Users\mkass\AppData\Local\Temp\STD2380_000000.tmp"
+
+. *business dynamics
 . clear
 
 . *import excel "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\bds2020_states.xlsx", sheet("bds2020_states_full") firstrow clear
-. import delimited "C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\bds2020_states_full.csv", clear 
+. *import delimited "C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\bds2020_states_full.csv", clear 
+. import delimited bds2020_states_full.csv, clear 
 (encoding automatically selected: ISO-8859-1)
 (27 vars, 2,193 obs)
+
+. 
+. /*so I an dropping many varialbes.  I decided that looking at job gains and losses isn't as ideal as establishment firms and losses
+> and the rate metrics, to develop my own my changing my dataset*/
+. 
+. drop estabs_entry_rate estabs_exit_rate job_creation_rate_births job_creation_rate job_destruction_rate_deaths net_job_creation_rate job_destruction_rate ///
+> firmdeath_firms firmdeath_estabs firmdeath_emp reallocation_rate emp job_creation job_creation_births job_creation_continuers job_destruction ///
+> job_destruction_deaths job_destruction_continuers net_job_creation denom 
+
+. 
+. sort state_id year
+
+. drop if year < 1980
+(102 observations deleted)
+
+. 
+. cap drop decennial
+
+. gen decennial = 4 
+
+. replace decennial = 3 if year <= 2010
+(1,581 real changes made)
+
+. replace decennial = 2 if year <= 2000
+(1,071 real changes made)
+
+. replace decennial = 1 if year <= 1990
+(561 real changes made)
+
+. 
+. *setting up varaibles for increments in 10 years
+. bysort state_id decennial: egen estabs_entry_ten = sum(estabs_entry)
+
+. bysort state_id decennial: egen estabs_exit_ten = sum(estabs_exit)
+
+. la var firms "No. of firms for that specific year"
+
+. la var estabs "no. of establishments for that year (think multiple plants per firm)"
+
+. la var estabs_entry_ten "A count of establishments born over the previous 10 years"
+
+. la var estabs_exit_ten "A count of establishments exiting over the previous 10 years"
+
+. 
+. *now removing middle years
+. keep if (year == 1990 | year == 2000 | year == 2010 | year == 2020 )
+(1,887 observations deleted)
+
+. 
+. replace year = 2019 if year == 2020
+(51 real changes made)
+
+. 
+. *creating rates for our varaibles
+. xtset state_id decennial
+
+Panel variable: state_id (strongly balanced)
+ Time variable: decennial, 1 to 4
+         Delta: 1 unit
+
+. cap drop estabs_entry_rate_ten
+
+. cap drop estabs_exit_rate_ten
+
+. gen estabs_entry_rate_ten = 2*(estabs_entry_ten - l.estabs_entry_ten)/(estabs_entry_ten + l.estabs_entry_ten)
+(51 missing values generated)
+
+. gen estabs_exit_rate_ten = 2*(estabs_exit_ten - l.estabs_exit_ten)/(estabs_exit_ten + l.estabs_exit_ten)
+(51 missing values generated)
+
+. la var estabs_entry_rate_ten "average percent change of establishments born"
+
+. la var estabs_exit_rate_ten "average percent change of establishments exited"
+
+. 
+. rename state_name state
+
+. 
+. *save "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\bus_dynamics.dta", replace
+. save bus_dynamics.dta, replace
+(file bus_dynamics.dta not found)
+file bus_dynamics.dta saved
 
 . 
 end of do-file

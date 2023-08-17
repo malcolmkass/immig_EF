@@ -31,6 +31,8 @@ clear
 *import excel "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\bds2020_states.xlsx", sheet("bds2020_states_full") firstrow clear
 import delimited "C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\bds2020_states_full.csv", clear 
 
+bds2020_states_full.csv
+
 
 /*so I an dropping many varialbes.  I decided that looking at job gains and losses isn't as ideal as establishment firms and losses
 and the rate metrics, to develop my own my changing my dataset*/
@@ -73,22 +75,20 @@ la var estabs_exit_rate_ten "average percent change of establishments exited"
 rename state_name state
 
 
-save bus_dynamics.dta, replace
+save "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\bus_dynamics.dta", replace
 
 
 
 ***************************************************************************************************************************
 *urban percentage
-*import excel "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\pop-urban-pct-historical_partial_clean.xls", sheet("States") firstrow clear
-import delimited "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\csv files\pop-urban-pct-historical_partial_clean.csv", clear
+import delimited "C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\pop-urban-pct-historical_partial_clean.csv", clear
 
 reshape long y, i(state) j(year)
 rename y urban_pct
 drop if year == 2010
-save urban_pct.dta, replace
+save "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\urban_pct.dta", replace
 
-*import excel "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\State_Urban_Rural_Pop_2020_2010_census.xlsx", sheet("States") firstrow clear
-import delimited "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\csv files\State_Urban_Rural_Pop_2020_2010_census.csv", clear
+import delimited "C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\State_Urban_Rural_Pop_2020_2010_census.csv", clear
 
 rename statename state
 rename pctruralpop y2019
@@ -104,13 +104,13 @@ gen state_id = _n
 reshape long y, i(state) j(year) 
 rename y urban_pct
 
-merge 1:n state year using urban_pct.dta
+merge 1:n state year using "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\urban_pct.dta"
 drop _merge
 sort state year
 
 la var urban_pct "est. urban percentage by state"
 
-save urban_pct.dta, replace
+save "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\urban_pct.dta", replace
 
 
 /*note 1990 and 2000 data, this comes from the Urban Percentage of the Population for Counties, Historical Decennial Census, 1900-2010 U.S. Census Bureau
@@ -127,17 +127,16 @@ https://www.census.gov/programs-surveys/geography/guidance/geo-areas/urban-rural
 https://www.census.gov/geographies/reference-files/2010/geo/state-area.html
 */
 clear
-*import excel "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\state_area.xlsx", sheet("Sheet1") firstrow
-import delimited "C:\Users\mkass\IT (30) Advanced Dropbox\Malcolm Kass\Research\Immigration_EF_Nazmul\datafiles\csv files\state_area.csv", clear
-save state_area.dta, replace
+import delimited "C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\state_area.csv", clear
+save "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\state_area.dta", replace
 
 clear
 *import excel "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\Freedom_In_The_50_States_2022_kassedit.xlsx", sheet("Personal") firstrow clear
-import delimited "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\csv files\Freedom_In_The_50_States_2022_kassedit.csv", clear 
+import delimited "C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\Freedom_In_The_50_States_2022_kassedit.csv", clear 
 *rename Year year
 *rename State state
 la var personalfreedom "pers. freedom score from Cato"
-save state_persfreedom.dta, replace
+save "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\state_persfreedom.dta", replace
 *use state_persfreedom.dta, replace
 /*freedom in the 50 states. this include personal freedoms form the Cato institute
 https://www.freedominthe50states.org/data
@@ -147,14 +146,11 @@ see the overall tab and the instructions tab for more info
 no state_id, so with construcing dataset, need to match on state and year vs. state id
 */
 
-log close
-
-exit
-
 
 
 clear
-import excel "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\bea_employ_data.xlsx", sheet("bls_nonfarm_total") firstrow clear
+*import excel "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\bea_employ_data.xlsx", sheet("bls_nonfarm_total") firstrow clear
+import delimited using "C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\bea_employ_data.csv", clear
 reshape long y, i(state_id) j(year) 
 rename y tot_employ
 la var tot_employ "Total Employed individuals per state in thousands"
@@ -165,7 +161,7 @@ rename y private_employ
 la var private_employ "Private sector employed individuals per state in thousands"
 merge 1:1 state_id year using state_employed.dta
 drop _merge
-save state_employed.dta, replace
+save "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\state_employed.dta", replace
 *this is from the BLS_Data_Series*/
 
 
@@ -178,9 +174,9 @@ and
 https://apps.bea.gov/itable/iTable.cfm?ReqID=70&step=1&acrdn=1
 
 *I have already aggregated this, but we may want to explore this further, see the links above.  Lastly, nothing is adjusted for inflation at any level, not even current prices*/
-import excel "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\BEA_pop_inc_state_1.xlsx", sheet("BEA_pop_inc_state") firstrow clear
-rename GeoName state
-sort LineCode state
+import delimited using "C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\BEA_pop_inc_state_1.csv", clear
+rename geoname state
+sort linecode state
 drop if state == "Far West"
 drop if state == "Great Lakes"
 drop if state == "Mideast"
@@ -189,15 +185,15 @@ drop if state == "Plains"
 drop if state == "Southeast"
 drop if state == "Southwest"
 drop if state == "Rocky Mountain"
-sort LineCode state
-gen temp = _n if LineCode == 1
+sort linecode state
+gen temp = _n if linecode == 1
 bysort state: egen state_id = max(temp)
 drop temp
-reshape long y, i(state_id LineCode) j(year)
+reshape long y, i(state_id linecode) j(year)
 rename y demotemp
-sort state_id  year LineCode
-drop Description
-reshape wide demotemp, i(state_id year) j(LineCode)
+sort state_id  year linecode
+drop description
+reshape wide demotemp, i(state_id year) j(linecode)
 rename demotemp1 state_income_mil_nom
 rename demotemp2 population
 rename demotemp3 percapita_income_nom
@@ -211,7 +207,7 @@ la var percapita_income_nom "per capital income in $$$, nominal"
 Note. All dollar estimates are in millions of current dollars (not adjusted for inflation). Calculations are performed on unrounded data.																																																																																																
 (NA) Not available.																																																																																																
 Last updated: September 30, 2022--revised statistics for 2017-2021.*/																																																																																																
-save bea_stuff.dta, replace 
+save "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\bea_stuff.dta", replace 
 
 /*CPI numbers
 Series Title:	All items in U.S. city average, all urban consumers, seasonally adjusted				
@@ -220,12 +216,12 @@ Item:	All items
 Base Period:	1982-84=100				
 Years:	1947 to 2022				*/
 
-import excel "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\cpi_kass.xlsx", sheet("BLS Data Series") firstrow clear
+export delimited using "C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\cpi_kass.csv", replace
 rename Year year
-merge 1:m year using bea_stuff.dta
+merge 1:m year using "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\bea_stuff.dta"
 drop _merge
 
-save bea_stuff.dta, replace 
+save "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\bea_stuff.dta", replace 
 
 *****************************************************************************
 /*dependent varaible.  Here from the Pew research center, description of data.  
@@ -243,7 +239,7 @@ Unauthorized Immigrants = Foreign Born - Immigrant Population
 The lawful resident immigrant population is estimated by applying demographic methods to counts of lawful admissions covering the period since 1980 obtained from the Department of Homeland Security's Office of Immigration Statistics and its predecessor at the Immigration and Naturalization Service, with projections to current years, when necessary. Initial estimates here are calculated separately for age-gender groups in six states (California, Florida, Illinois, New Jersey, New York and Texas) and the balance of the country; within these areas the estimates are further subdivided into immigrant populations from 35 countries or groups of countries by period of arrival in the United States.*/
 
 clear
-import excel "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\foreign_kass.xlsx", sheet("clean") firstrow
+import delimited using "C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\foreign_kass.csv", clear
 sort state year
 
 
@@ -287,8 +283,7 @@ la var unauthorized_mpi "Total unauthorized immigrants, rounded to nearest 1000s
 la var unauthorized_female_pct_mpi "Percent unauthorized that are female"
 la var unauthorized_latin_pct_mpi "Percent unauthorized that are from Mexico or Latin America"
 
-
-save foreign_kass.dta, replace
+save "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\foreign_kass.dta", replace 
 
 
 ******************************************************************************
@@ -618,6 +613,10 @@ save ef_immig_data_v5.dta, replace
 
 
 log off
+
+log close
+
+exit
 
 
 
