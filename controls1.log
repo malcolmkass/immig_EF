@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\controls1.log
   log type:  text
- opened on:  15 Aug 2023, 18:13:10
+ opened on:  17 Aug 2023, 14:22:26
 
 .         set more off
 
@@ -21,10 +21,10 @@
   [7]              "C:\ado\personal"
 
 . 
-end of do-file
-
-. do "C:\Users\mkass\AppData\Local\Temp\STD2380_000000.tmp"
-
+. /*from a file that explains how to make nice graphs.
+> https://medium.com/the-stata-guide/stata-and-github-integration-8c87ddf9784a
+> */
+. 
 . ssc install schemepack, replace
 checking schemepack consistency and verifying not already installed...
 all files already exist and are up to date.
@@ -32,6 +32,32 @@ all files already exist and are up to date.
 . set scheme black_w3d
 
 . graph set window fontface "Arial Narrow"
+
+. 
+. *fave packages (may not be important)
+. *run "C:\Users\mkass\IT (30) Advanced Dropbox\Malcolm Kass\Research\Immigration_EF_Nazmul\datafiles\csv_files\kass_packages.do"
+. 
+. ***************************************************************************************************************************
+. *business dynamics
+. clear
+
+. *import excel "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\bds2020_states.xlsx", sheet("bds2020_states_full") firstrow clear
+. import delimited "C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\bds2020_states_full.csv", clear 
+file C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\bds2020_states_full.csv not found
+r(601);
+
+end of do-file
+
+r(601);
+
+. do "C:\Users\mkass\AppData\Local\Temp\STD2380_000000.tmp"
+
+. clear
+
+. *import excel "C:\Users\mkass\Dropbox (IT (30) Advanced)\Research\Immigration_EF_Nazmul\datafiles\bds2020_states.xlsx", sheet("bds2020_states_full") firstrow clear
+. import delimited "C:\Users\mkass\OneDrive\Documents\GitHub\immig_EF\bds2020_states_full.csv", clear 
+(encoding automatically selected: ISO-8859-1)
+(27 vars, 2,193 obs)
 
 . 
 end of do-file
